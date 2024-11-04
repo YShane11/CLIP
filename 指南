@@ -1,0 +1,35 @@
+# ===================================程式邏輯=======================================
+
+1. 生成粗略分割遮罩： 利用CLIP模型，將影像劃分為多個小區塊，對每個區塊進行分類。
+
+2. 融合多尺度結果: 將不同尺度下的分割結果透過權重融合，獲得更準確的分割遮罩。
+
+2. 獲取前景遮罩： 由於FOUND的安裝環境較為複雜（需要torch 1.8.1、torchvision 0.9.1和python 3.7），老師在demo時會非常不方便，
+   因此，這邊選擇使用同樣用途，但較為方便的GrabCut方法來進行前景提取。
+
+3. 融合結果： 前景遮罩與多尺度融合的分割結果結合，得到類似於語意分割的效果。
+
+# ===================================環境安裝=======================================
+
+安裝torch (在'https://pytorch.org/get-started/locally/'中選擇適當的版本已啟用CUDA)
+
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124  # PyTorch
+pip install opencv-python # OpenCV
+pip install pillow # PIL
+pip install matplotlib # Matplotlib
+pip install ftfy regex tqdm # # CLIP 需要的套件
+pip install git+https://github.com/openai/CLIP.git # CLIP安裝
+
+# ===================================檔案介紹=======================================
+
+data資料夾
+-- 為測試資料集
+
+output資料夾
+-- 64x64.png、128x128.png、256x256.png 為不同尺度下去丟CLIP辨識的結果。遮罩部分顏色可以去對應標籤類別
+-- final_result.png 為三個尺度進行權重運算後塞選出來的圖檔
+-- foreground_test.png 為前景提取，也可以說是前背景分割
+-- final_result_with_mask.png 也就是最終成品 透過foreground_test.png去塞選final_result.png得到的結果
+
+clip_DIY_demo.py 
+-- 主要程式(詳見程式邏輯)
